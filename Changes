@@ -1,0 +1,6 @@
+Revision history for Pod-Cpandoc
+
+0.02 2011-06-10
+    - use api.metacpan.org instead of search.cpan.org
+    - use HTTP::Tiny instead of LWP::Simple, Web::Scraper, and URI
+
