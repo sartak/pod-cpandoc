@@ -1,27 +1,23 @@
 package Pod::Cpandoc::Scraper;
 use strict;
 use warnings;
-use URI;
-use Web::Scraper;
 use File::Temp 'tempfile';
-use LWP::Simple;
+use HTTP::Tiny;
 
 sub get_documentation_for {
     my $self   = shift;
     my $module = shift;
 
-    my $cpan = scraper {
-        process "h2.sr>a", url => '@href';
-    };
-    my $res = $cpan->scrape(URI->new("http://search.cpan.org/search?mode=module&query=$module"));
-
-    (my $url = $res->{url}) =~ s/author/src/;
-    $url =~ s{~(\w+)}{"src/".uc($1)}e;
-    my $contents = get($url);
+    my $ua = HTTP::Tiny->new;
+    my $response = $ua->get(
+        "http://api.metacpan.org/pod/$module",
+        { headers => { 'Content-Type' => 'application/x-perl' } },
+    );
+    return unless $response->{success};
 
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile("${module}-XXXX", UNLINK => 1);
-    print { $fh } $contents;
+    print { $fh } $response->{content};
     close $fh;
 
     return $fn;
