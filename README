@@ -22,9 +22,10 @@ SNEAKY INSTALL
 
         Now `perldoc Acme::BadExample` works!
 
-    This should work fine since "cpandoc" passes all options through to
-    "perldoc". This module is merely a subclass that just falls back to
-    scraping a CPAN index.
+    "perldoc" should continue to work for everything that you're used to,
+    since "cpandoc" passes all options through to it. "cpandoc" is merely a
+    subclass that falls back to scraping a CPAN index when it fails to find
+    your queried file in @INC.
 
 SEE ALSO
     The sneaky install was inspired by <https://github.com/defunkt/hub>.

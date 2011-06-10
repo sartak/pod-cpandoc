@@ -83,9 +83,10 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
 
     Now `perldoc Acme::BadExample` works!
 
-This should work fine since C<cpandoc> passes all options through
-to C<perldoc>. This module is merely a subclass that just falls
-back to scraping a CPAN index.
+C<perldoc> should continue to work for everything that you're used
+to, since C<cpandoc> passes all options through to it. C<cpandoc>
+is merely a subclass that falls back to scraping a CPAN index when
+it fails to find your queried file in C<@INC>.
 
 =head1 SEE ALSO
 
