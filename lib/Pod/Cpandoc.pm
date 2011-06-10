@@ -2,11 +2,29 @@ package Pod::Cpandoc;
 use strict;
 use warnings;
 use base 'Pod::Perldoc';
-use Pod::Cpandoc::Scraper;
+use HTTP::Tiny;
+use File::Temp 'tempfile';
 
 our $VERSION = '0.01';
 
-use constant scraper => 'Pod::Cpandoc::Scraper';
+sub scrape_documentation_for {
+    my $self   = shift;
+    my $module = shift;
+
+    my $ua = HTTP::Tiny->new;
+    my $response = $ua->get(
+        "http://api.metacpan.org/pod/$module",
+        { headers => { 'Content-Type' => 'text/x-pod' } },
+    );
+    return unless $response->{success};
+
+    $module =~ s/::/-/g;
+    my ($fh, $fn) = tempfile("${module}-XXXX", UNLINK => 1);
+    print { $fh } $response->{content};
+    close $fh;
+
+    return $fn;
+}
 
 sub grand_search_init {
     my $self = shift;
@@ -16,7 +34,7 @@ sub grand_search_init {
         my $pages = shift;
 
         for my $module (@$pages) {
-            push @found, $self->scraper->get_documentation_for($module);
+            push @found, $self->scrape_documentation_for($module);
         }
     }
 
