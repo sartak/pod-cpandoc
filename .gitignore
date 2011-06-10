@@ -1,6 +1,9 @@
 META.yml
 MYMETA.yml
 Makefile
+MANIFEST
+MANIFEST.bak
+Pod-Cpandoc-*
 blib/
 inc/
 pm_to_blib
