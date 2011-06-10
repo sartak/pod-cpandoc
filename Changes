@@ -1,9 +1,10 @@
 Revision history for Pod-Cpandoc
 
-0.03 
+0.03 2011-06-10
     - specify a minimum perl version of 5.8.1 since that gets you
       File::Temp and Pod::Perldoc
     - give additional cpandoc-specific output under -D
+    - documentation improvements
 
 0.02 2011-06-10
     - use api.metacpan.org instead of search.cpan.org
