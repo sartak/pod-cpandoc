@@ -12,6 +12,8 @@ sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
 
+    $self->aside("Going to query api.metacpan.org for $module\n");
+
     my $ua = HTTP::Tiny->new;
     my $response = $ua->get(
         "http://api.metacpan.org/pod/$module",
