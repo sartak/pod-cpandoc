@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-Pod::Cpandoc - a perldoc that works for modules you don't have
+Pod::Cpandoc - perldoc that works for modules you don't have installed
 
 =head1 SYNOPSIS
 
