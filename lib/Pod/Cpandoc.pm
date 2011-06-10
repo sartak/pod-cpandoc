@@ -14,7 +14,7 @@ sub scrape_documentation_for {
     my $ua = HTTP::Tiny->new;
     my $response = $ua->get(
         "http://api.metacpan.org/pod/$module",
-        { headers => { 'Content-Type' => 'application/x-perl' } },
+        { headers => { 'Content-Type' => 'text/x-pod' } },
     );
     return unless $response->{success};
 
