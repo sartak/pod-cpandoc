@@ -1,0 +1,3 @@
+#!/usr/bin/env perl
+use Pod::Cpandoc;
+exit( Pod::Cpandoc->run() );
