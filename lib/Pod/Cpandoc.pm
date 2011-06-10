@@ -23,6 +23,14 @@ sub grand_search_init {
     return @found;
 }
 
+sub opt_V {
+    my $self = shift;
+
+    print "Cpandoc v$VERSION, ";
+
+    return $self->SUPER::opt_V(@_);
+}
+
 1;
 
 __END__
