@@ -74,14 +74,19 @@ Pod::Cpandoc - a perldoc that works for modules you don't have
 =head1 SNEAKY INSTALL
 
     cpanm Pod::Cpandoc
-    alias perldoc=cpandoc
 
-This should work fine since cpandoc respects all perldoc commands.
-It's a subclass that just falls back to scraping L<http://search.cpan.org>.
+    then: alias perldoc=cpandoc
+    or:   function perldoc () { cpandoc "$@" }
+
+    Now `perldoc Acme::BadExample` works!
+
+This should work fine since C<cpandoc> passes all options through
+to C<perldoc>. This module is merely a subclass that just falls
+back to scraping a CPAN index.
 
 =head1 SEE ALSO
 
-The sneaky install was inspired by L<https://github.com/defunkt/hub>
+The sneaky install was inspired by L<https://github.com/defunkt/hub>.
 
 =head1 AUTHOR
 
