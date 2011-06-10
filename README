@@ -1,0 +1,40 @@
+NAME
+    Pod::Cpandoc - perldoc that works for modules you don't have installed
+
+SYNOPSIS
+        cpandoc Acme::BadExample
+            -- works even if you don't have Acme::BadExample installed!
+
+        cpandoc -v '$?'
+            -- passes everything through to regular perldoc
+
+        cpandoc -tT Acme::BadExample | grep -i acme
+            -- options are respected even if the module was scraped
+
+        vim `cpandoc -l Web::Scraper`
+            -- getting the idea yet?
+
+SNEAKY INSTALL
+        cpanm Pod::Cpandoc
+
+        then: alias perldoc=cpandoc
+        or:   function perldoc () { cpandoc "$@" }
+
+        Now `perldoc Acme::BadExample` works!
+
+    This should work fine since "cpandoc" passes all options through to
+    "perldoc". This module is merely a subclass that just falls back to
+    scraping a CPAN index.
+
+SEE ALSO
+    The sneaky install was inspired by <https://github.com/defunkt/hub>.
+
+AUTHOR
+    Shawn M Moore "sartak@gmail.com"
+
+COPYRIGHT
+    Copyright 2011 Shawn M Moore.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
