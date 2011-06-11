@@ -2,6 +2,15 @@ package Pod::Cpandoc;
 use 5.8.1;
 use strict;
 use warnings;
+
+# convert CPANDOC* env vars to PERLDOC*
+BEGIN {
+    for my $cpandoc_opt (grep { /^CPANDOC/ } keys %ENV) {
+        my ($option) = $cpandoc_opt =~ /^CPANDOC(.*)/;
+        $ENV{"PERLDOC$option"} = $ENV{$cpandoc_opt};
+    }
+}
+
 use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
