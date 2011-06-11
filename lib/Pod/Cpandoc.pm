@@ -77,6 +77,25 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
     vim `cpandoc -l Web::Scraper`
         -- getting the idea yet?
 
+=head1 DESCRIPTION
+
+C<cpandoc> is a perl script that acts like C<perldoc> except that
+if it would have bailed out with
+C<No documentation found for "Uninstalled::Module">, it will instead
+scrape a CPAN index for the module's documentation.
+
+One important feature of C<cpandoc> is that it I<only> scrapes the
+live index if you do not have the module installed. So if you use
+C<cpandoc> on a module you already have installed, then it will
+just read the already-installed documentation. This means that the
+version of the documentation matches up with the version of the
+code you have. As a fringe benefit, C<cpandoc> will be fast for
+modules you've installed. :)
+
+All this means that you should be able to drop in C<cpandoc> in
+place of C<perldoc> and have everything keep working. See
+L</SNEAKY INSTALL> for how to do this.
+
 =head1 SNEAKY INSTALL
 
     cpanm Pod::Cpandoc
