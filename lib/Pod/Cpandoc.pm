@@ -14,7 +14,10 @@ sub scrape_documentation_for {
 
     $self->aside("Going to query api.metacpan.org for $module\n");
 
-    my $ua = HTTP::Tiny->new;
+    my $ua = HTTP::Tiny->new(
+        agent => "cpandoc/$VERSION";
+    );
+
     my $response = $ua->get(
         "http://api.metacpan.org/pod/$module",
         { headers => { 'Content-Type' => 'text/x-pod' } },
