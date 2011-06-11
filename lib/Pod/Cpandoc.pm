@@ -6,7 +6,7 @@ use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub scrape_documentation_for {
     my $self   = shift;

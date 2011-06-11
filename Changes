@@ -1,5 +1,9 @@
 Revision history for Pod-Cpandoc
 
+0.04 2011-06-11
+    - actually declare our dependency on HTTP::Tiny (bayashi)
+    - set user-agent to cpandoc/$VERSION
+
 0.03 2011-06-10
     - specify a minimum perl version of 5.8.1 since that gets you
       File::Temp and Pod::Perldoc
