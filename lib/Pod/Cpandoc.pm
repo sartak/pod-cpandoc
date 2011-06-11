@@ -84,6 +84,9 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
 
 =head1 SYNOPSIS
 
+    cpandoc File::Find
+        -- shows the documentation of your installed File::Find
+
     cpandoc Acme::BadExample
         -- works even if you don't have Acme::BadExample installed!
 
