@@ -1,5 +1,15 @@
 Revision history for Pod-Cpandoc
 
+0.05 2011-06-11
+    - add a description which explains more of the workings
+      also a response to http://twitter.com/karupanerura/status/79554581553614848
+    - hide spurious "No documentation" warning, but only if you have a
+      patched Pod-Perldoc. see https://github.com/sartak/perl/commit/5a8c16d4aa82
+      [rt.cpan.org #68762]
+    - put downloaded files in a real tempdir instead of .
+    - if -l is specified, don't unlink the tempfile to support
+      vim `perldoc -l Acme::BadExample` [rt.cpan.org #68769]
+
 0.04 2011-06-11
     - actually declare our dependency on HTTP::Tiny (bayashi)
     - set user-agent to cpandoc/$VERSION

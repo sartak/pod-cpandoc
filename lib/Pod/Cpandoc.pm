@@ -6,7 +6,7 @@ use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub unlink_tempfiles {
     my $self = shift;
