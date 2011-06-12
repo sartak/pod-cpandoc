@@ -8,6 +8,11 @@ use File::Temp 'tempfile';
 
 our $VERSION = '0.04';
 
+sub unlink_tempfiles {
+    my $self = shift;
+    return $self->opt_l ? 0 : 1;
+}
+
 sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
@@ -27,7 +32,7 @@ sub scrape_documentation_for {
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
         "${module}-XXXX",
-        UNLINK => 1,
+        UNLINK => $self->unlink_tempfiles,
         TMPDIR => 1,
     );
     print { $fh } $response->{content};
