@@ -25,7 +25,11 @@ sub scrape_documentation_for {
     return unless $response->{success};
 
     $module =~ s/::/-/g;
-    my ($fh, $fn) = tempfile("${module}-XXXX", UNLINK => 1);
+    my ($fh, $fn) = tempfile(
+        "${module}-XXXX",
+        UNLINK => 1,
+        TMPDIR => 1,
+    );
     print { $fh } $response->{content};
     close $fh;
 
