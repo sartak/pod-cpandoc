@@ -1,5 +1,11 @@
 Revision history for Pod-Cpandoc
 
+0.06 2011-06-13
+    - hide spurious "No documentation" warning even with unpatched Pod-Perldoc
+      (I found a better hook point, though it requires a little bit of gymnastics)
+    - factor out a live_cpan_url method for better subclassability
+      (or more monkey-patchability, realistically)
+
 0.05 2011-06-11
     - add a description which explains more of the workings
       also a response to http://twitter.com/karupanerura/status/79554581553614848
