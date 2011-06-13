@@ -34,6 +34,10 @@ DESCRIPTION
     "perldoc" and have everything keep working. See "SNEAKY INSTALL" for how
     to do this.
 
+    If you set the environment variable "CPANDOC_FETCH" to a true value,
+    then we will print a message to STDERR telling you that "cpandoc" is
+    going to make a request against the live CPAN index.
+
 SNEAKY INSTALL
         cpanm Pod::Cpandoc
 
