@@ -41,23 +41,12 @@ sub scrape_documentation_for {
     return $fn;
 }
 
-sub grand_search_init {
+sub searchfor {
     my $self = shift;
-    my @found = $self->SUPER::grand_search_init(@_);
+    my ($recurse,$s,@dirs) = @_;
 
-    if (@found == 0) {
-        my $pages = shift;
-
-        for my $module (@$pages) {
-            my @files = $self->scrape_documentation_for($module);
-            if (@files == 0) {
-                $self->real_report_no_matches($module);
-            }
-            push @found, @files;
-        }
-    }
-
-    return @found;
+    return $self->SUPER::searchfor(@_)
+        || $self->scrape_documentation_for($s);
 }
 
 sub opt_V {
@@ -67,21 +56,6 @@ sub opt_V {
 
     return $self->SUPER::opt_V(@_);
 }
-
-# these next two functions attempt to cover Pod-Perldoc versions
-# with and without my report_no_matches patch
-sub real_report_no_matches {
-    my $self = shift;
-
-    # if SUPER::can('report_no_matches') fails, then we have already reported
-    # no matches before even trying to scrape CPAN
-    if ($self->SUPER::can('report_no_matches')) {
-        $self->SUPER::report_no_matches(@_);
-    }
-}
-
-# don't report_no_matches until we've tried scraping CPAN
-sub report_no_matches { }
 
 1;
 
