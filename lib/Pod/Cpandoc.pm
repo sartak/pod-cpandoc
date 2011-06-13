@@ -41,12 +41,26 @@ sub scrape_documentation_for {
     return $fn;
 }
 
+our $QUERY_CPAN;
+sub grand_search_init {
+    my $self = shift;
+
+    local $QUERY_CPAN = 1;
+    return $self->SUPER::grand_search_init(@_);
+}
+
 sub searchfor {
     my $self = shift;
     my ($recurse,$s,@dirs) = @_;
 
-    return $self->SUPER::searchfor(@_)
-        || $self->scrape_documentation_for($s);
+    my @found = $self->SUPER::searchfor(@_);
+
+    if (@found == 0 && $QUERY_CPAN) {
+        $QUERY_CPAN = 0;
+        return $self->scrape_documentation_for($s);
+    }
+
+    return @found;
 }
 
 sub opt_V {
