@@ -8,6 +8,13 @@ use File::Temp 'tempfile';
 
 our $VERSION = '0.05';
 
+sub live_cpan_url {
+    my $self   = shift;
+    my $module = shift;
+
+    return "http://api.metacpan.org/pod/$module";
+}
+
 sub unlink_tempfiles {
     my $self = shift;
     return $self->opt_l ? 0 : 1;
@@ -17,14 +24,16 @@ sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
 
-    $self->aside("Going to query api.metacpan.org for $module\n");
+    my $url = $self->live_cpan_url($module);
+
+    $self->aside("Going to query $url\n");
 
     my $ua = HTTP::Tiny->new(
         agent => "cpandoc/$VERSION",
     );
 
     my $response = $ua->get(
-        "http://api.metacpan.org/pod/$module",
+        $url,
         { headers => { 'Content-Type' => 'text/x-pod' } },
     );
     return unless $response->{success};
