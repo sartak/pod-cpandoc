@@ -28,6 +28,10 @@ sub scrape_documentation_for {
 
     $self->aside("Going to query $url\n");
 
+    if ($ENV{CPANDOC_FETCH}) {
+        print STDERR "Fetching $url\n";
+    }
+
     my $ua = HTTP::Tiny->new(
         agent => "cpandoc/$VERSION",
     );
@@ -123,6 +127,10 @@ modules you've installed. :)
 All this means that you should be able to drop in C<cpandoc> in
 place of C<perldoc> and have everything keep working. See
 L</SNEAKY INSTALL> for how to do this.
+
+If you set the environment variable C<CPANDOC_FETCH> to a true value,
+then we will print a message to STDERR telling you that C<cpandoc> is
+going to make a request against the live CPAN index.
 
 =head1 SNEAKY INSTALL
 
