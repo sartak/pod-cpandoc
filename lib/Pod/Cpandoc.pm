@@ -150,7 +150,7 @@ it fails to find your queried file in C<@INC>.
 
 The sneaky install was inspired by L<https://github.com/defunkt/hub>.
 
-http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html
+L<http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html>
 
 =head1 AUTHOR
 
