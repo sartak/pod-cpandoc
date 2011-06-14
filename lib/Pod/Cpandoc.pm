@@ -100,7 +100,7 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
     cpandoc -v '$?'
         -- passes everything through to regular perldoc
 
-    cpandoc -tT Acme::BadExample | grep -i acme
+    cpandoc -m Acme::BadExample | grep system
         -- options are respected even if the module was scraped
 
     vim `cpandoc -l Web::Scraper`
