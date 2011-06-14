@@ -12,7 +12,7 @@ sub live_cpan_url {
     my $self   = shift;
     my $module = shift;
 
-    return "http://api.metacpan.org/pod/$module";
+    return "http://api.metacpan.org/source/$module";
 }
 
 sub unlink_tempfiles {
@@ -36,10 +36,7 @@ sub scrape_documentation_for {
         agent => "cpandoc/$VERSION",
     );
 
-    my $response = $ua->get(
-        $url,
-        { headers => { 'Content-Type' => 'text/x-pod' } },
-    );
+    my $response = $ua->get($url);
     return unless $response->{success};
 
     $module =~ s/::/-/g;
