@@ -42,6 +42,7 @@ sub scrape_documentation_for {
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
         "${module}-XXXX",
+        SUFFIX => ".pm",
         UNLINK => $self->unlink_tempfiles,
         TMPDIR => 1,
     );
