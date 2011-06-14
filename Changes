@@ -1,5 +1,10 @@
 Revision history for Pod-Cpandoc
 
+0.09 2011-06-14
+    - give tempfiles a .pm suffix so they syntax highlight
+    - more web-related debug output
+    - put some doc in the cpandoc script which points to Pod::Cpandoc
+
 0.08 2011-06-14
     - use metacpan's brand new /source/Module::Name endpoint (big
       thanks to @moritzonken for implemented it)

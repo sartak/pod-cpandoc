@@ -6,7 +6,7 @@ use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub live_cpan_url {
     my $self   = shift;
