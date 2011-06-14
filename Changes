@@ -1,5 +1,10 @@
 Revision history for Pod-Cpandoc
 
+0.08 2011-06-14
+    - use metacpan's brand new /source/Module::Name endpoint (big
+      thanks to @moritzonken for implemented it)
+      [rt.cpan.org #68770] this enables perldoc -m Acme::BadExample
+
 0.07 2011-06-13
     - if $CPANDOC_FETCH is true, notify you (via stderr) that cpandoc
       is doing a web request (requested by Thomas Sibley)

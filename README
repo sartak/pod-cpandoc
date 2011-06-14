@@ -11,7 +11,7 @@ SYNOPSIS
         cpandoc -v '$?'
             -- passes everything through to regular perldoc
 
-        cpandoc -tT Acme::BadExample | grep -i acme
+        cpandoc -m Acme::BadExample | grep system
             -- options are respected even if the module was scraped
 
         vim `cpandoc -l Web::Scraper`
@@ -54,7 +54,7 @@ SNEAKY INSTALL
 SEE ALSO
     The sneaky install was inspired by <https://github.com/defunkt/hub>.
 
-    http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html
+    <http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html>
 
 AUTHOR
     Shawn M Moore "sartak@gmail.com"
