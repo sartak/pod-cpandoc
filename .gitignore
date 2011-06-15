@@ -3,6 +3,7 @@ MYMETA.yml
 Makefile
 MANIFEST
 MANIFEST.bak
+MANIFEST.SKIP
 Pod-Cpandoc-*
 blib/
 inc/
