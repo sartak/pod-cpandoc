@@ -9,5 +9,6 @@ requires       'HTTP::Tiny';
 
 install_script 'bin/cpandoc';
 
+auto_manifest;
 WriteAll;
 
