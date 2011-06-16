@@ -20,7 +20,7 @@ sub unlink_tempfiles {
     return $self->opt_l ? 0 : 1;
 }
 
-sub scrape_documentation_for {
+sub query_live_cpan_for {
     my $self   = shift;
     my $module = shift;
 
@@ -46,6 +46,16 @@ sub scrape_documentation_for {
         return;
     }
 
+    return $response->{content};
+}
+
+sub scrape_documentation_for {
+    my $self   = shift;
+    my $module = shift;
+
+    my $content = $self->query_live_cpan_for($module);
+    return if !defined($content);
+
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
         "${module}-XXXX",
@@ -53,7 +63,7 @@ sub scrape_documentation_for {
         UNLINK => $self->unlink_tempfiles,
         TMPDIR => 1,
     );
-    print { $fh } $response->{content};
+    print { $fh } $content;
     close $fh;
 
     return $fn;
