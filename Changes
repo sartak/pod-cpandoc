@@ -1,5 +1,11 @@
 Revision history for Pod-Cpandoc
 
+0.10 2011-06-25
+    - link to Japanese translation from @bayashi
+      http://perldoc.jp/docs/modules/Pod-Cpandoc-0.09/Cpandoc.pod
+    - link to my YAPC::NA lightning talk
+      http://sartak.org/talks/yapc-na-2011/cpandoc/
+
 0.09 2011-06-14
     - give tempfiles a .pm suffix so they syntax highlight
     - more web-related debug output

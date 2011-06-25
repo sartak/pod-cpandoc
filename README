@@ -38,6 +38,12 @@ DESCRIPTION
     then we will print a message to STDERR telling you that "cpandoc" is
     going to make a request against the live CPAN index.
 
+TRANSLATIONS
+    Japanese
+            Japanese documentation can be found at
+            L<http://perldoc.jp/docs/modules/Pod-Cpandoc-0.09/Cpandoc.pod>,
+            contributed by @bayashi.
+
 SNEAKY INSTALL
         cpanm Pod::Cpandoc
 
@@ -55,6 +61,8 @@ SEE ALSO
     The sneaky install was inspired by <https://github.com/defunkt/hub>.
 
     <http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html>
+
+    <http://sartak.org/talks/yapc-na-2011/cpandoc/>
 
 AUTHOR
     Shawn M Moore "sartak@gmail.com"
