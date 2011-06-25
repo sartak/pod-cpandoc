@@ -147,6 +147,18 @@ If you set the environment variable C<CPANDOC_FETCH> to a true value,
 then we will print a message to STDERR telling you that C<cpandoc> is
 going to make a request against the live CPAN index.
 
+=head1 TRANSLATIONS
+
+=over 4
+
+=item Japanese
+
+    Japanese documentation can be found at
+    L<http://perldoc.jp/docs/modules/Pod-Cpandoc-0.09/Cpandoc.pod>,
+    contributed by @bayashi.
+
+=back
+
 =head1 SNEAKY INSTALL
 
     cpanm Pod::Cpandoc
