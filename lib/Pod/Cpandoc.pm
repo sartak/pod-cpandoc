@@ -35,14 +35,12 @@ sub fetch_url {
 
     my $response = $ua->get($url);
 
-    if ($response->{success}) {
-        $self->aside("Successfully received " . length($response->{content}) . " bytes\n");
-    }
-    else {
+    if (!$response->{success}) {
         $self->aside("Got a $response->{status} error from the server\n");
         return;
     }
 
+    $self->aside("Successfully received " . length($response->{content}) . " bytes\n");
     return $response->{content};
 }
 
