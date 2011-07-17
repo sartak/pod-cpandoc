@@ -20,11 +20,8 @@ sub unlink_tempfiles {
     return $self->opt_l ? 0 : 1;
 }
 
-sub query_live_cpan_for {
-    my $self   = shift;
-    my $module = shift;
-
-    my $url = $self->live_cpan_url($module);
+sub fetch_url {
+    my $self = shift;
 
     $self->aside("Going to query $url\n");
 
@@ -47,6 +44,14 @@ sub query_live_cpan_for {
     }
 
     return $response->{content};
+}
+
+sub query_live_cpan_for {
+    my $self   = shift;
+    my $module = shift;
+
+    my $url = $self->live_cpan_url($module);
+    return $self->fetch_url($url);
 }
 
 sub scrape_documentation_for {
