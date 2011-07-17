@@ -1,5 +1,8 @@
 Revision history for Pod-Cpandoc
 
+0.11 2011-07-17
+    - add support for `cpandoc URL` (requested by Claes Jakobsson)
+
 0.10 2011-06-25
     - link to Japanese translation from @bayashi
       http://perldoc.jp/docs/modules/Pod-Cpandoc-0.09/Cpandoc.pod
@@ -13,7 +16,7 @@ Revision history for Pod-Cpandoc
 
 0.08 2011-06-14
     - use metacpan's brand new /source/Module::Name endpoint (big
-      thanks to @moritzonken for implemented it)
+      thanks to @moritzonken who implemented it)
       [rt.cpan.org #68770] this enables perldoc -m Acme::BadExample
 
 0.07 2011-06-13

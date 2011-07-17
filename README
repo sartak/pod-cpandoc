@@ -17,6 +17,9 @@ SYNOPSIS
         vim `cpandoc -l Web::Scraper`
             -- getting the idea yet?
 
+        cpandoc http://darkpan.org/Eval::WithLexicals::AndGlobals
+            -- URLs work too!
+
 DESCRIPTION
     "cpandoc" is a perl script that acts like "perldoc" except that if it
     would have bailed out with "No documentation found for

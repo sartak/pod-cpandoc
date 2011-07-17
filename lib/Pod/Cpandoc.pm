@@ -6,7 +6,7 @@ use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub live_cpan_url {
     my $self   = shift;
@@ -134,6 +134,9 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
 
     vim `cpandoc -l Web::Scraper`
         -- getting the idea yet?
+
+    cpandoc http://darkpan.org/Eval::WithLexicals::AndGlobals
+        -- URLs work too!
 
 =head1 DESCRIPTION
 
