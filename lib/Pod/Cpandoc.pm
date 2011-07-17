@@ -57,9 +57,16 @@ sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
 
-    my $content = $self->query_live_cpan_for($module);
+    my $content;
+    if ($module =~ m{^https?://}) {
+        $content = $self->fetch_url($module);
+    }
+    else {
+        $content = $self->query_live_cpan_for($module);
+    }
     return if !defined($content);
 
+    $module =~ s{.*/}{}; # directories and/or URLs with slashes anger File::Temp
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
         "${module}-XXXX",
