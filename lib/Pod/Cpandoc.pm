@@ -22,6 +22,7 @@ sub unlink_tempfiles {
 
 sub fetch_url {
     my $self = shift;
+    my $url  = shift;
 
     $self->aside("Going to query $url\n");
 
