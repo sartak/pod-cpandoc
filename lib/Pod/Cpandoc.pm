@@ -3,8 +3,13 @@ use 5.8.1;
 use strict;
 use warnings;
 use base 'Pod::Perldoc';
+
+use Archive::Tar;
+use Archive::Zip;
 use HTTP::Tiny;
+use File::Spec;
 use File::Temp 'tempfile';
+use IO::Uncompress::Gunzip;
 
 our $VERSION = '0.11';
 
@@ -53,6 +58,91 @@ sub query_live_cpan_for {
     return $self->fetch_url($url);
 }
 
+sub use_minicpan {
+    my ( $self ) = @_;
+
+    my $rc_file = File::Spec->catfile((getpwuid $<)[7], '.minicpanrc');
+    return -e $rc_file;
+}
+
+sub fetch_from_minicpan {
+    my ( $self, $module ) = @_;
+
+    $self->aside("Fetching documentation from minicpan\n");
+
+    my $rc_file = File::Spec->catfile((getpwuid $<)[7], '.minicpanrc');
+    my $minicpan_path;
+
+    my $h;
+    unless(open $h, '<', $rc_file) {
+        $self->aside("Unable to open '$rc_file': $!");
+        return;
+    }
+    while(<$h>) {
+        chomp;
+        if(/local:\s*(.*)/) {
+            $minicpan_path = $1;
+            last;
+        }
+    }
+    close $h;
+
+    unless(defined $minicpan_path) {
+        $self->aside("Unable to parse minicpan path from .minicpanrc");
+        return;
+    }
+
+    my $packages = File::Spec->catfile($minicpan_path, 'modules',
+        '02packages.details.txt.gz');
+
+    $h = IO::Uncompress::Gunzip->new($packages);
+
+    my $archive_path;
+
+    while(<$h>) {
+        chomp;
+        if(/^\Q$module\E\s/) {
+            ( undef, undef, $archive_path ) = split;
+            last;
+        }
+    }
+    close $h;
+
+    unless(defined $archive_path) {
+        $self->aside("Unable to find '$module' in minicpan");
+        return;
+    }
+    $archive_path = File::Spec->catfile($minicpan_path, 'authors', 'id',
+        $archive_path);
+
+    my $module_path = $module;
+    $module_path =~ s!::!/!g;
+    $module_path .= '.pm';
+
+    if($archive_path =~ /\.zip$/) {
+        my $archive = Archive::Zip->new;
+        $archive->read($archive_path);
+        my @matches = $archive->membersMatching(qr/\Q$module_path\E$/);
+
+        if(@matches == 0) {
+            $self->aside("Unable to find '$module_path' in '$archive_path'\n");
+            return;
+        } else {
+            return $archive->contents($matches[0]);
+        }
+    } else { # assume it's a tarball
+        my $archive = Archive::Tar->new($archive_path);
+        my @matches = grep { /\Q$module_path\E$/ } $archive->list_files;
+
+        if(@matches == 0) {
+            $self->aside("Unable to find '$module_path' in '$archive_path'\n");
+            return;
+        } else {
+            return $archive->get_content($matches[0]);
+        }
+    }
+}
+
 sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
@@ -62,7 +152,11 @@ sub scrape_documentation_for {
         $content = $self->fetch_url($module);
     }
     else {
-        $content = $self->query_live_cpan_for($module);
+        if($self->use_minicpan) {
+            $content = $self->fetch_from_minicpan($module);
+        } else {
+            $content = $self->query_live_cpan_for($module);
+        }
     }
     return if !defined($content);
 
