@@ -5,7 +5,7 @@ use warnings;
 use base 'Pod::Perldoc';
 
 use Archive::Tar;
-use Archive::Zip;
+use Archive::Zip qw(AZ_OK);
 use HTTP::Tiny;
 use File::Spec;
 use File::Temp 'tempfile';
@@ -65,27 +65,33 @@ sub use_minicpan {
     return -e $rc_file;
 }
 
-sub fetch_from_minicpan {
-    my ( $self, $module ) = @_;
-
-    $self->aside("Fetching documentation from minicpan\n");
+sub get_minicpan_path {
+    my ( $self ) = @_;
 
     my $rc_file = File::Spec->catfile((getpwuid $<)[7], '.minicpanrc');
     my $minicpan_path;
 
-    my $h;
-    unless(open $h, '<', $rc_file) {
+    my $fh;
+    unless(open $fh, '<', $rc_file) {
         $self->aside("Unable to open '$rc_file': $!");
         return;
     }
-    while(<$h>) {
+    while(<$fh>) {
         chomp;
         if(/local:\s*(.*)/) {
             $minicpan_path = $1;
             last;
         }
     }
-    close $h;
+    close $fh;
+
+    return $minicpan_path;
+}
+
+sub find_module_archive {
+    my ( $self, $module ) = @_;
+
+    my $minicpan_path = $self->get_minicpan_path;
 
     unless(defined $minicpan_path) {
         $self->aside("Unable to parse minicpan path from .minicpanrc");
@@ -95,7 +101,7 @@ sub fetch_from_minicpan {
     my $packages = File::Spec->catfile($minicpan_path, 'modules',
         '02packages.details.txt.gz');
 
-    $h = IO::Uncompress::Gunzip->new($packages);
+    my $h = IO::Uncompress::Gunzip->new($packages);
 
     my $archive_path;
 
@@ -108,38 +114,83 @@ sub fetch_from_minicpan {
     }
     close $h;
 
+    if($archive_path) {
+        $archive_path = File::Spec->catfile($minicpan_path, 'authors', 'id',
+            $archive_path);
+    }
+    return $archive_path;
+}
+
+sub load_archive {
+    my ( $self, $archive_path ) = @_;
+
+    my $archive;
+
+    if($archive_path =~ /\.zip$/) {
+        $archive = Archive::Zip->new;
+        unless($archive->read($archive_path) == AZ_OK) {
+            undef $archive;
+        }
+    } else { # assume it's a tarball
+        $archive = Archive::Tar->new($archive_path);
+    }
+
+    return $archive;
+}
+
+sub get_archive_files {
+    my ( $self, $archive ) = @_;
+
+    if($archive->isa('Archive::Zip')) {
+        return $archive->memberNames;
+    } else {
+        return $archive->list_files;
+    }
+}
+
+sub find_module_file {
+    my ( $self, $module, @files ) = @_;
+
+    $module =~ s!::!/!g;
+    $module .= '.pm';
+
+    if(my @matches = grep { /\Q$module\E$/ } @files) {
+        return $matches[0];
+    }
+}
+
+sub extract_archive_file {
+    my ( $self, $archive, $file ) = @_;
+
+    if($archive->isa('Archive::Zip')) {
+        return $archive->contents($file);
+    } else {
+        return $archive->get_content($file);
+    }
+}
+
+sub fetch_from_minicpan {
+    my ( $self, $module ) = @_;
+
+    $self->aside("Fetching documentation from minicpan\n");
+
+    my $archive_path = $self->find_module_archive($module);
+
     unless(defined $archive_path) {
         $self->aside("Unable to find '$module' in minicpan");
         return;
     }
-    $archive_path = File::Spec->catfile($minicpan_path, 'authors', 'id',
-        $archive_path);
 
-    my $module_path = $module;
-    $module_path =~ s!::!/!g;
-    $module_path .= '.pm';
+    my $archive = $self->load_archive($archive_path);
+    unless($archive) {
+        $self->aside("Unable to load archive '$archive'");
+        return;
+    }
 
-    if($archive_path =~ /\.zip$/) {
-        my $archive = Archive::Zip->new;
-        $archive->read($archive_path);
-        my @matches = $archive->membersMatching(qr/\Q$module_path\E$/);
-
-        if(@matches == 0) {
-            $self->aside("Unable to find '$module_path' in '$archive_path'\n");
-            return;
-        } else {
-            return $archive->contents($matches[0]);
-        }
-    } else { # assume it's a tarball
-        my $archive = Archive::Tar->new($archive_path);
-        my @matches = grep { /\Q$module_path\E$/ } $archive->list_files;
-
-        if(@matches == 0) {
-            $self->aside("Unable to find '$module_path' in '$archive_path'\n");
-            return;
-        } else {
-            return $archive->get_content($matches[0]);
-        }
+    my @files = $self->get_archive_files($archive);
+    my $file  = $self->find_module_file($module, @files);
+    if($file) {
+        return $self->extract_archive_file($archive, $file);
     }
 }
 
