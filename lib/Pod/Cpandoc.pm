@@ -154,8 +154,34 @@ sub find_module_file {
     $module =~ s!::!/!g;
     $module .= '.pm';
 
-    if(my @matches = grep { /\Q$module\E$/ } @files) {
-        return $matches[0];
+    my $base = $module;
+    $base    =~ s!.*/!!;
+
+    my %topdirs = map {
+        my $file = $_;
+        $file    =~ s!/.*!!;
+        $file => 1;
+    } @files;
+
+    my $prefix = '';
+    if(keys(%topdirs) == 1) { # if all files begin with the same directory,
+                              # we strip the top level directory to make
+                              # finding files under strange archives easier
+        ( $prefix ) = keys(%topdirs);
+        $prefix .= '/';
+        @files = map { s/^\Q$prefix\E//; $_ } @files;
+    }
+
+    my @tests = (
+        "lib/$module",
+        $module,
+        $base,
+    );
+
+    foreach my $test (@tests) {
+        if(my @matches = grep { $_ eq $test } @files) {
+            return $prefix . $matches[0];
+        }
     }
 }
 
