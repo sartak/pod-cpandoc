@@ -231,7 +231,9 @@ sub scrape_documentation_for {
     else {
         if($self->use_minicpan) {
             $content = $self->fetch_from_minicpan($module);
-        } else {
+        }
+
+        unless($content) {
             $content = $self->query_live_cpan_for($module);
         }
     }
