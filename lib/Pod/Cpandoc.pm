@@ -193,6 +193,8 @@ The sneaky install was inspired by L<https://github.com/defunkt/hub>.
 
 L<http://tech.bayashi.jp/archives/entry/perl-module/2011/003305.html>
 
+L<http://perladvent.org/2011/2011-12-15.html>
+
 L<http://sartak.org/talks/yapc-na-2011/cpandoc/>
 
 =head1 AUTHOR
