@@ -3,8 +3,13 @@ use 5.8.1;
 use strict;
 use warnings;
 use base 'Pod::Perldoc';
+
+use Archive::Tar;
+use Archive::Zip qw(AZ_OK);
 use HTTP::Tiny;
+use File::Spec;
 use File::Temp 'tempfile';
+use IO::Uncompress::Gunzip;
 
 our $VERSION = '0.11';
 
@@ -53,6 +58,168 @@ sub query_live_cpan_for {
     return $self->fetch_url($url);
 }
 
+sub use_minicpan {
+    my ( $self ) = @_;
+
+    my $rc_file = File::Spec->catfile((getpwuid $<)[7], '.minicpanrc');
+    return -e $rc_file;
+}
+
+sub get_minicpan_path {
+    my ( $self ) = @_;
+
+    my $rc_file = File::Spec->catfile((getpwuid $<)[7], '.minicpanrc');
+    my $minicpan_path;
+
+    my $fh;
+    unless(open $fh, '<', $rc_file) {
+        $self->aside("Unable to open '$rc_file': $!");
+        return;
+    }
+    while(<$fh>) {
+        chomp;
+        if(/local:\s*(.*)/) {
+            $minicpan_path = $1;
+            last;
+        }
+    }
+    close $fh;
+
+    return $minicpan_path;
+}
+
+sub find_module_archive {
+    my ( $self, $module ) = @_;
+
+    my $minicpan_path = $self->get_minicpan_path;
+
+    unless(defined $minicpan_path) {
+        $self->aside("Unable to parse minicpan path from .minicpanrc");
+        return;
+    }
+
+    my $packages = File::Spec->catfile($minicpan_path, 'modules',
+        '02packages.details.txt.gz');
+
+    my $h = IO::Uncompress::Gunzip->new($packages);
+
+    my $archive_path;
+
+    while(<$h>) {
+        chomp;
+        if(/^\Q$module\E\s/) {
+            ( undef, undef, $archive_path ) = split;
+            last;
+        }
+    }
+    close $h;
+
+    if($archive_path) {
+        $archive_path = File::Spec->catfile($minicpan_path, 'authors', 'id',
+            $archive_path);
+    }
+    return $archive_path;
+}
+
+sub load_archive {
+    my ( $self, $archive_path ) = @_;
+
+    my $archive;
+
+    if($archive_path =~ /\.zip$/) {
+        $archive = Archive::Zip->new;
+        unless($archive->read($archive_path) == AZ_OK) {
+            undef $archive;
+        }
+    } else { # assume it's a tarball
+        $archive = Archive::Tar->new($archive_path);
+    }
+
+    return $archive;
+}
+
+sub get_archive_files {
+    my ( $self, $archive ) = @_;
+
+    if($archive->isa('Archive::Zip')) {
+        return $archive->memberNames;
+    } else {
+        return $archive->list_files;
+    }
+}
+
+sub find_module_file {
+    my ( $self, $module, @files ) = @_;
+
+    $module =~ s!::!/!g;
+    $module .= '.pm';
+
+    my $base = $module;
+    $base    =~ s!.*/!!;
+
+    my %topdirs = map {
+        my $file = $_;
+        $file    =~ s!/.*!!;
+        $file => 1;
+    } @files;
+
+    my $prefix = '';
+    if(keys(%topdirs) == 1) { # if all files begin with the same directory,
+                              # we strip the top level directory to make
+                              # finding files under strange archives easier
+        ( $prefix ) = keys(%topdirs);
+        $prefix .= '/';
+        @files = map { s/^\Q$prefix\E//; $_ } @files;
+    }
+
+    my @tests = (
+        "lib/$module",
+        $module,
+        $base,
+    );
+
+    foreach my $test (@tests) {
+        if(my @matches = grep { $_ eq $test } @files) {
+            return $prefix . $matches[0];
+        }
+    }
+}
+
+sub extract_archive_file {
+    my ( $self, $archive, $file ) = @_;
+
+    if($archive->isa('Archive::Zip')) {
+        return $archive->contents($file);
+    } else {
+        return $archive->get_content($file);
+    }
+}
+
+sub fetch_from_minicpan {
+    my ( $self, $module ) = @_;
+
+    $self->aside("Fetching documentation from minicpan\n");
+
+    my $archive_path = $self->find_module_archive($module);
+
+    unless(defined $archive_path) {
+        $self->aside("Unable to find '$module' in minicpan");
+        return;
+    }
+
+    my $archive = $self->load_archive($archive_path);
+    unless($archive) {
+        $self->aside("Unable to load archive '$archive'");
+        return;
+    }
+
+    my @files = $self->get_archive_files($archive);
+    my $file  = $self->find_module_file($module, @files);
+    if($file) {
+        return $self->extract_archive_file($archive, $file);
+    }
+}
+
 sub scrape_documentation_for {
     my $self   = shift;
     my $module = shift;
@@ -62,7 +229,13 @@ sub scrape_documentation_for {
         $content = $self->fetch_url($module);
     }
     else {
-        $content = $self->query_live_cpan_for($module);
+        if($self->use_minicpan) {
+            $content = $self->fetch_from_minicpan($module);
+        }
+
+        unless($content) {
+            $content = $self->query_live_cpan_for($module);
+        }
     }
     return if !defined($content);
 
