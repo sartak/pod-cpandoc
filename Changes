@@ -1,5 +1,9 @@
 Revision history for Pod-Cpandoc
 
+0.12 2012-10-09
+    - specifically request POD from metacpan, unless -m (Thomas Sibley++)
+        https://github.com/sartak/pod-cpandoc/pull/7
+
 0.11 2011-07-17
     - add support for `cpandoc URL` (requested by Claes Jakobsson)
 
