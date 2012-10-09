@@ -12,7 +12,11 @@ sub live_cpan_url {
     my $self   = shift;
     my $module = shift;
 
-    return "http://api.metacpan.org/source/$module";
+    if ($self->opt_m) {
+        return "http://api.metacpan.org/source/$module";
+    } else {
+        return "http://api.metacpan.org/pod/$module?content-type=text/x-pod";
+    }
 }
 
 sub unlink_tempfiles {
