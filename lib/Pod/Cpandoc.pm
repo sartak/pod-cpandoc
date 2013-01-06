@@ -67,7 +67,13 @@ sub query_live_cpan_for {
     my $module = shift;
 
     my $url = $self->live_cpan_url($module);
-    return $self->fetch_url($url);
+    my $content = $self->fetch_url($url);
+
+    if ($self->opt_c) {
+        $content = JSON::decode_json($content)->{content};
+    }
+
+    return $content;
 }
 
 sub scrape_documentation_for {
@@ -84,10 +90,6 @@ sub scrape_documentation_for {
         $content = $self->query_live_cpan_for($module);
     }
     return if !defined($content);
-
-    if ($self->opt_c) {
-        $content = JSON::decode_json($content)->{content};
-    }
 
     $module =~ s{.*/}{}; # directories and/or URLs with slashes anger File::Temp
     $module =~ s/::/-/g;
