@@ -153,6 +153,9 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
     cpandoc Acme::BadExample
         -- works even if you don't have Acme::BadExample installed!
 
+    cpandoc -c Text::Xslate
+        -- shows the changelog file for Text::Xslate
+
     cpandoc -v '$?'
         -- passes everything through to regular perldoc
 
