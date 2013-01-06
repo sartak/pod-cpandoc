@@ -85,6 +85,10 @@ sub scrape_documentation_for {
     }
     return if !defined($content);
 
+    if ($self->opt_c) {
+        $content = JSON::decode_json($content)->{content};
+    }
+
     $module =~ s{.*/}{}; # directories and/or URLs with slashes anger File::Temp
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
