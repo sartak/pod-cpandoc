@@ -76,6 +76,8 @@ sub scrape_documentation_for {
 
     my $content;
     if ($module =~ m{^https?://}) {
+        die "Can't use -c on arbitrary URLs, only module names"
+            if $self->opt_c;
         $content = $self->fetch_url($module);
     }
     else {
