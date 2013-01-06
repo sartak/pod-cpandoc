@@ -203,11 +203,11 @@ L<http://sartak.org/talks/yapc-na-2011/cpandoc/>
 
 =head1 AUTHOR
 
-Shawn M Moore C<sartak@gmail.com>
+Shawn M Moore C<code@sartak.org>
 
 =head1 COPYRIGHT
 
-Copyright 2011 Shawn M Moore.
+Copyright 2011-2013 Shawn M Moore.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
