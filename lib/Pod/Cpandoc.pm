@@ -8,6 +8,8 @@ use File::Temp 'tempfile';
 
 our $VERSION = '0.12';
 
+sub opt_c { shift->_elem('opt_c', @_) }
+
 sub live_cpan_url {
     my $self   = shift;
     my $module = shift;
