@@ -14,9 +14,14 @@ sub live_cpan_url {
     my $self   = shift;
     my $module = shift;
 
-    if ($self->opt_m) {
+    if ($self->opt_c) {
+        my $dist = $module; # XXX map module to dist correctly
+        return "http://api.metacpan.org/v0/changes/$dist";
+    }
+    elsif ($self->opt_m) {
         return "http://api.metacpan.org/source/$module";
-    } else {
+    }
+    else {
         return "http://api.metacpan.org/pod/$module?content-type=text/x-pod";
     }
 }
