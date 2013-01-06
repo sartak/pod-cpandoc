@@ -71,6 +71,7 @@ sub query_live_cpan_for {
 
     if ($self->opt_c) {
         $content = JSON::decode_json($content)->{content};
+        $content = "=pod\n\n$content";
     }
 
     return $content;
