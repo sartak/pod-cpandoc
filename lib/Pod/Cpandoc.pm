@@ -5,6 +5,7 @@ use warnings;
 use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
+use JSON ();
 
 our $VERSION = '0.12';
 
@@ -15,7 +16,12 @@ sub live_cpan_url {
     my $module = shift;
 
     if ($self->opt_c) {
-        my $dist = $module; # XXX map module to dist correctly
+        my $module_json = $self->fetch_url("http://api.metacpan.org/module/$module");
+        if (!$module_json) {
+            die "Unable to fetch changes for $module";
+        }
+        my $module_details = JSON::decode_json($module_json);
+        my $dist = $module_details->{distribution};
         return "http://api.metacpan.org/v0/changes/$dist";
     }
     elsif ($self->opt_m) {
