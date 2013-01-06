@@ -101,6 +101,10 @@ our $QUERY_CPAN;
 sub grand_search_init {
     my $self = shift;
 
+    if ($self->opt_c) {
+        return $self->scrape_documentation_for($_[0][0]);
+    }
+
     local $QUERY_CPAN = 1;
     return $self->SUPER::grand_search_init(@_);
 }
