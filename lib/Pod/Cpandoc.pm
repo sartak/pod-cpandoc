@@ -5,16 +5,29 @@ use warnings;
 use base 'Pod::Perldoc';
 use HTTP::Tiny;
 use File::Temp 'tempfile';
+use JSON ();
 
 our $VERSION = '0.12';
+
+sub opt_c { shift->_elem('opt_c', @_) }
 
 sub live_cpan_url {
     my $self   = shift;
     my $module = shift;
 
-    if ($self->opt_m) {
+    if ($self->opt_c) {
+        my $module_json = $self->fetch_url("http://api.metacpan.org/module/$module");
+        if (!$module_json) {
+            die "Unable to fetch changes for $module";
+        }
+        my $module_details = JSON::decode_json($module_json);
+        my $dist = $module_details->{distribution};
+        return "http://api.metacpan.org/v0/changes/$dist";
+    }
+    elsif ($self->opt_m) {
         return "http://api.metacpan.org/source/$module";
-    } else {
+    }
+    else {
         return "http://api.metacpan.org/pod/$module?content-type=text/x-pod";
     }
 }
@@ -54,7 +67,14 @@ sub query_live_cpan_for {
     my $module = shift;
 
     my $url = $self->live_cpan_url($module);
-    return $self->fetch_url($url);
+    my $content = $self->fetch_url($url);
+
+    if ($self->opt_c) {
+        $content = JSON::decode_json($content)->{content};
+        $content = "=pod\n\n$content";
+    }
+
+    return $content;
 }
 
 sub scrape_documentation_for {
@@ -63,6 +83,8 @@ sub scrape_documentation_for {
 
     my $content;
     if ($module =~ m{^https?://}) {
+        die "Can't use -c on arbitrary URLs, only module names"
+            if $self->opt_c;
         $content = $self->fetch_url($module);
     }
     else {
@@ -74,7 +96,7 @@ sub scrape_documentation_for {
     $module =~ s/::/-/g;
     my ($fh, $fn) = tempfile(
         "${module}-XXXX",
-        SUFFIX => ".pm",
+        SUFFIX => ($self->opt_c ? ".txt" : ".pm"),
         UNLINK => $self->unlink_tempfiles,
         TMPDIR => 1,
     );
@@ -87,6 +109,10 @@ sub scrape_documentation_for {
 our $QUERY_CPAN;
 sub grand_search_init {
     my $self = shift;
+
+    if ($self->opt_c) {
+        return $self->scrape_documentation_for($_[0][0]);
+    }
 
     local $QUERY_CPAN = 1;
     return $self->SUPER::grand_search_init(@_);
@@ -129,6 +155,9 @@ Pod::Cpandoc - perldoc that works for modules you don't have installed
 
     cpandoc Acme::BadExample
         -- works even if you don't have Acme::BadExample installed!
+
+    cpandoc -c Text::Xslate
+        -- shows the changelog file for Text::Xslate
 
     cpandoc -v '$?'
         -- passes everything through to regular perldoc
