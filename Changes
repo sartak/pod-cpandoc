@@ -1,5 +1,9 @@
 Revision history for Pod-Cpandoc
 
+0.13 2013-01-06
+    - add -c for reading the Changes of a dist (requested by many users)
+        https://github.com/sartak/pod-cpandoc/issues/2
+
 0.12 2012-10-09
     - specifically request POD from metacpan, unless -m (Thomas Sibley++)
         https://github.com/sartak/pod-cpandoc/pull/7

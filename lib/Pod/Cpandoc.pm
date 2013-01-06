@@ -7,7 +7,7 @@ use HTTP::Tiny;
 use File::Temp 'tempfile';
 use JSON ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 sub opt_c { shift->_elem('opt_c', @_) }
 
