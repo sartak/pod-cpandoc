@@ -16,7 +16,7 @@ sub live_cpan_url {
     my $module = shift;
 
     if ($self->opt_c) {
-        my $module_json = $self->fetch_url("http://api.metacpan.org/module/$module?fields=distribution");
+        my $module_json = $self->fetch_url("http://api.metacpan.org/v0/module/$module?fields=distribution");
         if (!$module_json) {
             die "Unable to fetch changes for $module";
         }
@@ -25,10 +25,10 @@ sub live_cpan_url {
         return "http://api.metacpan.org/v0/changes/$dist";
     }
     elsif ($self->opt_m) {
-        return "http://api.metacpan.org/source/$module";
+        return "http://api.metacpan.org/v0/source/$module";
     }
     else {
-        return "http://api.metacpan.org/pod/$module?content-type=text/x-pod";
+        return "http://api.metacpan.org/v0/pod/$module?content-type=text/x-pod";
     }
 }
 
