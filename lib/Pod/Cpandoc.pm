@@ -16,7 +16,7 @@ sub live_cpan_url {
     my $module = shift;
 
     if ($self->opt_c) {
-        my $module_json = $self->fetch_url("http://api.metacpan.org/module/$module");
+        my $module_json = $self->fetch_url("http://api.metacpan.org/module/$module?fields=distribution");
         if (!$module_json) {
             die "Unable to fetch changes for $module";
         }
