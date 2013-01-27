@@ -6,7 +6,7 @@ readme_from    'lib/Pod/Cpandoc.pm';
 githubmeta;
 
 requires       'HTTP::Tiny';
-requires       'JSON';
+requires       'JSON::PP';
 
 install_script 'bin/cpandoc';
 
