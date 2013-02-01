@@ -1,5 +1,8 @@
 Revision history for Pod-Cpandoc
 
+0.15 2013-02-01
+    - improvements to the metacpan API calls
+
 0.14 2013-01-27
     - switch from JSON to JSON::PP to get us back to only core (5.14+) deps
     - improvements to the metacpan API calls
