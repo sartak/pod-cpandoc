@@ -22,7 +22,7 @@ sub live_cpan_url {
         }
         my $module_details = JSON::PP::decode_json($module_json);
         my $dist = $module_details->{distribution};
-        return "http://api.metacpan.org/v0/changes/$dist";
+        return "http://api.metacpan.org/v0/changes/$dist?fields=content";
     }
     elsif ($self->opt_m) {
         return "http://api.metacpan.org/v0/source/$module";
