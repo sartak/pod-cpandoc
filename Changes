@@ -1,6 +1,6 @@
 Revision history for Pod-Cpandoc
 
-$NEXT
+0.16 2016-12-01
     - Switch to MetaCPAN v1 API, which also requires SSL
 
 0.15 2013-02-01
