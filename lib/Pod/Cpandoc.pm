@@ -16,19 +16,19 @@ sub live_cpan_url {
     my $module = shift;
 
     if ($self->opt_c) {
-        my $module_json = $self->fetch_url("http://api.metacpan.org/v0/module/$module?fields=distribution");
+        my $module_json = $self->fetch_url("https://fastapi.metacpan.org/v1/module/$module?fields=distribution");
         if (!$module_json) {
             die "Unable to fetch changes for $module";
         }
         my $module_details = JSON::PP::decode_json($module_json);
         my $dist = $module_details->{distribution};
-        return "http://api.metacpan.org/v0/changes/$dist?fields=content";
+        return "https://fastapi.metacpan.org/v1/changes/$dist?fields=content";
     }
     elsif ($self->opt_m) {
-        return "http://api.metacpan.org/v0/source/$module";
+        return "https://fastapi.metacpan.org/v1/source/$module";
     }
     else {
-        return "http://api.metacpan.org/v0/pod/$module?content-type=text/x-pod";
+        return "https://fastapi.metacpan.org/v1/pod/$module?content-type=text/x-pod";
     }
 }
 
@@ -48,7 +48,8 @@ sub fetch_url {
     }
 
     my $ua = HTTP::Tiny->new(
-        agent => "cpandoc/$VERSION",
+        agent      => "cpandoc/$VERSION",
+        verify_SSL => 1,
     );
 
     my $response = $ua->get($url);
