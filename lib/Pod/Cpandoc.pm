@@ -58,6 +58,9 @@ sub fetch_url {
         $self->aside("Got a $response->{status} error from the server\n");
         return;
     }
+    if ($response->{headers}{'x-content-type'} ne 'text/x-pod') {
+        return;
+    }
 
     $self->aside("Successfully received " . length($response->{content}) . " bytes\n");
     return $response->{content};
