@@ -58,7 +58,8 @@ sub fetch_url {
         $self->aside("Got a $response->{status} error from the server\n");
         return;
     }
-    if ($response->{headers}{'x-content-type'} ne 'text/x-pod') {
+    my $type = $response->{headers}{'x-content-type'};
+    if ($type ne 'text/x-pod' && $type ne 'text/x-script.perl-module') {
         return;
     }
 
